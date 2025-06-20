@@ -6,7 +6,7 @@ Template to run fast api in fly.io with poetry as env manager
 
 Use this
 ```sh
-poetry run uvicorn flyio_fastapi_poetry_template.main:app     
+poetry run uvicorn filespeak_backend.main:app     
 ```
 
 The structure of the folder is inspire on [this](https://fastapi.tiangolo.com/tutorial/bigger-applications/)

@@ -1,7 +1,7 @@
 import sys
 
 from fastapi import FastAPI
-from .routers import users
+from .routers import upload
 from .chat import chat_interface
 import gradio as gr
 
@@ -9,7 +9,7 @@ version = f"{sys.version_info.major}.{sys.version_info.minor}"
 
 app = FastAPI()
 
-app.include_router(users.router)
+app.include_router(upload.router)
 #app.include_router(chat.router)
 
 @app.get("/")
