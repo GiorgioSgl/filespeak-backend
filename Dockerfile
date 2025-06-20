@@ -20,8 +20,8 @@ ENV VIRTUAL_ENV=/app/.venv \
 
 COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
-COPY flyio_fastapi_poetry_template ./flyio_fastapi_poetry_template
+COPY filespeak_backend ./filespeak_backend
 
 EXPOSE 8000 
 
-ENTRYPOINT ["uvicorn", "flyio_fastapi_poetry_template.main:app", "--host", "0.0.0.0", "--port", "8000"]
+ENTRYPOINT ["uvicorn", "filespeak_backend.main:app", "--host", "0.0.0.0", "--port", "8000"]

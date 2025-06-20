@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "flyio-fastapi-poetry-template"
+name = "filespeak-backend"
 version = "0.1.1"
 description = "Template to run fast api in fly.io with poetry as env manager"
 authors = ["Giorgio Segalla <giorgiosgl1997@gmail.com>"]
@@ -10,6 +10,7 @@ readme = "README.md"
 python = "^3.11"
 fastapi = "^0.115.6"
 uvicorn = "^0.32.1"
+gradio = "^5.34.2"
 
 
 [tool.poetry.group.dev.dependencies]
