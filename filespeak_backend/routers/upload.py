@@ -108,9 +108,9 @@ async def query_file(query: str):
 async def list_documents():
     try:
         data = collection.get()
-        return {"ids": data.get("ids", [])}
+        return data.get("ids", [])  # Devuelve una lista directamente
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error al listar documentos: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error listing documents: {str(e)}")
 
 
 @router.post("/reset", tags=["upload"])

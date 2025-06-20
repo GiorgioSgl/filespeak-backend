@@ -10,7 +10,7 @@ async def upload_ui():
     <!DOCTYPE html>
     <html>
     <head>
-        <title>Subida de Archivos</title>
+        <title>File Upload</title>
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -33,7 +33,7 @@ async def upload_ui():
                 display: none;
             }
             .btn {
-                margin-top: 10px;
+                margin: 10px 5px;
                 padding: 10px 20px;
                 background-color: #007BFF;
                 color: white;
@@ -41,25 +41,41 @@ async def upload_ui():
                 border-radius: 5px;
                 cursor: pointer;
             }
-            #result {
+            .btn-danger {
+                background-color: #dc3545;
+            }
+            #result, #file-list {
                 margin-top: 20px;
                 white-space: pre-wrap;
                 text-align: left;
                 max-width: 600px;
                 margin-left: auto;
                 margin-right: auto;
+                background: #f9f9f9;
+                padding: 15px;
+                border-radius: 10px;
             }
         </style>
     </head>
     <body>
-        <h2>Sube tus archivos (PDF, DOCX, TXT, HTML)</h2>
+        <h2>Upload your files (PDF, DOCX, TXT, HTML)</h2>
         <div id="drop-area">
             <form class="my-form">
-                <p>Arrastra y suelta los archivos aquí, o</p>
+                <p>Drag and drop files here, or</p>
                 <input type="file" id="fileElem" multiple onchange="handleFiles(this.files)">
-                <label class="btn" for="fileElem">Selecciona archivos</label>
+                <label class="btn" for="fileElem">Select files</label>
             </form>
         </div>
+
+        <div>
+            <button class="btn" onclick="refreshFileList()">🔄 Refresh list</button>
+            <button class="btn btn-danger" onclick="resetFiles()">🗑️ Reset</button>
+        </div>
+
+        <h3>Uploaded Files:</h3>
+        <div id="file-list">The list of files will appear here.</div>
+
+        <h3>Result:</h3>
         <div id="result"></div>
 
         <script>
@@ -74,13 +90,10 @@ async def upload_ui():
                 e.stopPropagation();
             }
 
-            ['dragenter', 'dragover'].forEach(eventName => {
-                dropArea.addEventListener(eventName, () => dropArea.classList.add('highlight'), false);
-            });
-
-            ['dragleave', 'drop'].forEach(eventName => {
-                dropArea.addEventListener(eventName, () => dropArea.classList.remove('highlight'), false);
-            });
+            dropArea.addEventListener('dragenter', () => dropArea.classList.add('highlight'), false);
+            dropArea.addEventListener('dragover', () => dropArea.classList.add('highlight'), false);
+            dropArea.addEventListener('dragleave', () => dropArea.classList.remove('highlight'), false);
+            dropArea.addEventListener('drop', () => dropArea.classList.remove('highlight'), false);
 
             dropArea.addEventListener('drop', handleDrop, false);
 
@@ -103,7 +116,26 @@ async def upload_ui():
 
                 const text = await response.text();
                 document.getElementById("result").textContent = text;
+                refreshFileList(); // Refresh after upload
             }
+
+            async function refreshFileList() {
+                const response = await fetch("/ls");
+                const files = await response.json();
+                document.getElementById("file-list").textContent = 
+                    files.length ? files.join("\\n") : "No files found.";
+            }
+
+            async function resetFiles() {
+                if (!confirm("Are you sure you want to delete all uploaded files?")) return;
+                const response = await fetch("/reset", { method: "POST" });
+                const text = await response.text();
+                document.getElementById("result").textContent = text;
+                refreshFileList();
+            }
+
+            // Load file list on page load
+            refreshFileList();
         </script>
     </body>
     </html>
