@@ -34,9 +34,19 @@ def find_document(message, threshold=0.9):
                 "metadata": metadata
             })
 
-    print(len(results["documents"][0]), "documents found")
+    if len(filtered_docs) == 0:
+        return "No se encontraron documentos relevantes."
+    
+    source_first_doc = filtered_docs[0]["metadata"]["source"]
 
-    return results["documents"][0]
+    docs = collection.get(
+        where={"source": source_first_doc}
+    )["documents"]
+
+    for doc in filtered_docs[1:]:
+        docs.append(doc)
+
+    return docs
 
 
 def chat_with_agent(message, history):
@@ -47,6 +57,7 @@ def chat_with_agent(message, history):
         {"role": "user", "content": f"Here the history of the chat: {str(history)}"},
         {"role": "user", "content": message}
     ]
+    print("documents:", len(document))
 
     print("history:", history)
 
@@ -61,4 +72,4 @@ def chat_with_agent(message, history):
 def respond(message, history):
     return chat_with_agent(message, history)
 
-chat_interface = gr.ChatInterface(fn=respond, title="Docuement Agent",)
+chat_interface = gr.ChatInterface(fn=respond, title="Docuement Agent")
