@@ -8,4 +8,8 @@ openai_ef = embedding_functions.OpenAIEmbeddingFunction(
 )
 
 client = chromadb.Client()
-collection = client.create_collection("sample_collection", embedding_function=openai_ef)
+collection = client.create_collection(
+    "sample_collection",
+    embedding_function=openai_ef,
+    metadata={"hnsw:space": "cosine"}
+)
