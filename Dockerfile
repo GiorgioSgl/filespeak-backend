@@ -1,4 +1,4 @@
-FROM python:3.11-buster as builder
+FROM python:3.10-slim-bookworm as builder
 
 RUN pip install poetry==1.4.2
 
@@ -13,7 +13,7 @@ COPY pyproject.toml poetry.lock ./
 
 RUN poetry install --without dev --no-root && rm -rf $POETRY_CACHE_DIR
 
-FROM python:3.11-slim-buster as runtime
+FROM python:3.10-slim-bookworm as runtime
 
 ENV VIRTUAL_ENV=/app/.venv \
     PATH="/app/.venv/bin:$PATH"
