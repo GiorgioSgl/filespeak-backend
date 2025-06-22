@@ -12,7 +12,7 @@ chat_router = APIRouter()
 def find_document(message, threshold=0.9):
     results = collection.query(
         query_texts=[message],
-        n_results=3
+        n_results=2
     )
 
     if not results or not results['documents']:
@@ -50,16 +50,14 @@ def find_document(message, threshold=0.9):
 
 
 def chat_with_agent(message, history):
-    document = find_document(message)
+    documents = find_document(message)
     messages = [
         {"role": "system", "content": "You are document manager and you should use the document I passed you to answer. If document are not founding so please dont answer."},
-        {"role": "user", "content": f"Here are the documents:\n{document}\n"},
+        {"role": "user", "content": f"Here are the documents:\n{documents}\n"},
         {"role": "user", "content": f"Here the history of the chat: {str(history)}"},
         {"role": "user", "content": message}
     ]
-    print("documents:", len(document))
-
-    print("history:", history)
+    print("documents:", len(documents))
 
     response = client.chat.completions.create(
         model="gpt-4.1-mini",

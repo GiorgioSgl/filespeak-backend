@@ -1,52 +1,130 @@
-# flyio-fastapi-poetry-template
-Template to run fast api in fly.io with poetry as env manager 
+# Filespeak Backend
 
+A FastAPI backend for document upload, storage, and chat-based querying using OpenAI and ChromaDB.  
+Includes a web UI for uploading documents and a Gradio-powered chat interface for interacting with your document collection.
 
-# How to run in local
+![Architecture](architecture.png)
 
-Use this
+## How to use
+
+1. Drag and drop or select files at `/upload/ui`
+2. See uploaded files from the UI
+3. Go to `/chat` to interact with your documents using natural language
+
+## Features
+
+- Upload and store documents (`.pdf`, `.docx`, `.txt`, `.html`) via API or web UI
+- Documents are chunked and embedded using OpenAI embeddings, stored in ChromaDB
+- Query your documents using natural language via a chat interface (Gradio)
+- REST endpoints for listing, resetting, and querying documents
+- Docker and Fly.io deployment ready
+
+---
+
+## Local Development
+
+### 1. Install dependencies
+
 ```sh
-poetry run uvicorn filespeak_backend.main:app     
+poetry install
 ```
 
-The structure of the folder is inspire on [this](https://fastapi.tiangolo.com/tutorial/bigger-applications/)
+### 2. Set up environment variables
 
+Copy `.env.sample` to `.env` and add your OpenAI API key:
 
-
-# How to start docker
-
-```sh
-$ docker build -t poetry-demo:latest .   
-$ docker run -p 3001:8000 --rm --name prueba  -d poetry-demo:latest
-$ curl http://localhost:3001 
+```
+OPENAI_API_KEY=your-openai-key
 ```
 
-# 🚀 How to Get Started
-1. Install flyctl
-    
-    Follow the official guide to install flyctl:
-    
-    👉 Install flyctl
+### 3. Run the server
 
-2. Pick a Name for Your App
-    
-    Choose a name for your app, then update that name in the following places:
+```sh
+poetry run uvicorn filespeak_backend.main:app
+```
 
-    - Rename the src/ folder to match your app name.
+- Visit [http://localhost:8000/upload/ui](http://localhost:8000/upload/ui) for the upload UI
+- Visit [http://localhost:8000/chat](http://localhost:8000/chat) for the chat interface
 
-    - In fly.toml, update the app name.
+---
 
-    - In pyproject.toml, change the project name.
+## API Endpoints
 
-    - In the Dockerfile, update any references to the old name.
+- `POST /upload` — Upload a single document
+- `POST /upload_multiple` — Upload multiple documents
+- `GET /ls` — List all stored document IDs
+- `POST /reset` — Delete all documents from the collection
+- `GET /query?query=...` — Query the collection with a text prompt
 
-3. Deploy Your App
-    Run this command in your terminal:
+See [filespeak_backend/routers/documents.py](filespeak_backend/routers/documents.py) for details.
 
-    ```sh
-    $ fly launch
-    ```
+---
 
-    Follow the prompts to complete the setup.
+## Web UI
 
-4. To automate the deploy with each push, you have to add a token to the secrets of the repo.
+- Drag and drop or select files at `/upload/ui`
+- See uploaded files and reset the collection from the UI
+
+---
+
+## Chat Interface
+
+- Go to `/chat` to interact with your documents using natural language
+- Powered by Gradio and OpenAI GPT-4
+
+---
+
+## Docker
+
+Build and run with Docker:
+
+```sh
+docker build -t filespeak-backend .
+docker run -p 8000:8000 --rm filespeak-backend
+```
+
+---
+
+## Deployment (Fly.io)
+
+1. Install [flyctl](https://fly.io/docs/hands-on/install-flyctl/)
+2. Set your app name in `fly.toml` and `pyproject.toml`
+3. Deploy:
+
+```sh
+fly launch
+```
+
+---
+
+## Testing
+
+Run tests with:
+
+```sh
+poetry run pytest
+```
+
+---
+
+## Project Structure
+
+```
+filespeak_backend/
+    main.py          # FastAPI app entrypoint
+    chat.py          # Gradio chat interface
+    my_chromadb.py   # ChromaDB client and collection setup
+    routers/
+        documents.py # Document upload/query endpoints
+        ui.py        # HTML upload UI endpoint
+static/
+    favicon.ico
+tests/
+    test_ok.py
+```
+
+---
+
+## License
+
+MIT
