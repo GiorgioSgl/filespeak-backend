@@ -35,7 +35,7 @@ def find_document(message, threshold=0.9):
             })
 
     if len(filtered_docs) == 0:
-        return "No se encontraron documentos relevantes."
+        return "No relevant documents were found."
     
     source_first_doc = filtered_docs[0]["metadata"]["source"]
 
